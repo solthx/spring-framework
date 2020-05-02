@@ -138,18 +138,6 @@ configure(allprojects) { project ->
 		}
 	}
 
-	test {
-		systemProperty("java.awt.headless", "true")
-		systemProperty("testGroups", project.properties.get("testGroups"))
-		scanForTestClasses = false
-		include(["**/*Tests.class", "**/*Test.class"])
-		// Since we set scanForTestClasses to false, we need to filter out inner
-		// classes with the "$" pattern; otherwise, using -Dtest.single=MyTests to
-		// run MyTests by itself will fail if MyTests contains any inner classes.
-		exclude(["**/Abstract*.class", '**/*$*'])
-		reports.junitXml.setDestination(file("$buildDir/test-results"))
-	}
-
 	repositories {
 		maven { url "https://repo.spring.io/libs-release" }
 		maven { url "https://repo.spring.io/snapshot" }	// Reactor Bismuth snapshots (towards SR13)
