@@ -90,6 +90,7 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	 * @see #postProcessBeforeInstantiation
 	 */
 	// 返回值的意思就是：实例化之后，是否执行populate方法，true则执行，false则跳过.
+	// 我们可以在这个方法里自己手动实现对刚刚初始化好的bean进行填充操作，然后返回false跳过默认的populate
 	default boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
 		return true;
 	}
