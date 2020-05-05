@@ -68,6 +68,13 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	 * @see #postProcessAfterInstantiation
 	 * @see org.springframework.beans.factory.support.AbstractBeanDefinition#hasBeanClass
 	 */
+	// 在实例化之前，做的一些事.
+	// 如果返回了null则说明交给spring进行初始化
+	// 如果不想让spring去做，也可以手动在这个方法里自己根据beanClass对象和beanName来完成初始化，
+	// 初始化得到的bean作为返回值就ok了～
+	// 猜测：需要注意的是，这一步如果是自己手动创建的话，不光要实例化，还要自己进行数据的填充，因为这个方法执行完了之后
+	// 直接执行的就是 xxxAfterInitialization... 就是初始化之后该干的事情了。。
+	// AOP就在这里进行搞的～
 	@Nullable
 	default Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
 		return null;
@@ -89,6 +96,7 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	 * @throws org.springframework.beans.BeansException in case of errors
 	 * @see #postProcessBeforeInstantiation
 	 */
+	// 在实例化之后，做的一些事
 	// 返回值的意思就是：实例化之后，是否执行populate方法，true则执行，false则跳过.
 	// 我们可以在这个方法里自己手动实现对刚刚初始化好的bean进行填充操作，然后返回false跳过默认的populate
 	default boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
@@ -113,6 +121,8 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	 * @throws org.springframework.beans.BeansException in case of errors
 	 * @see org.springframework.beans.MutablePropertyValues
 	 */
+	// spring 5.1 之后，这个方法就被废弃了... 取而代之的是postProcessProperties
+	// 在工厂将给定属性值赋值给指定bean之前，对其进行的一些处理。
 	@Nullable
 	default PropertyValues postProcessPropertyValues(
 			PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName) throws BeansException {
