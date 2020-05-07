@@ -220,6 +220,15 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				/**
 				 * 将beanName添加到singletonsCurrentlyInCreation这样一个set集合中
 				 * 表示beanName对应的bean正在创建中
+				 * 这样做的目的在于，当满足：
+				 * 		1. "这个bean是单例" &&
+				 * 		2. "这个bean允许循环引用" &&
+				 * 		3. "这个bean在singletonsCurrentlyInCreation中"
+				 *	的时候，则说明该bean在未被populate之前就暴露在外面的，
+				 *	什么叫暴露在外面呢？ 一般来说，当bean被创建完成后才能被其他bean所看到并赋值，
+				 *	而这里为了解决循环引用的问题，只要满足了上面的3个条件，就允许bean在未被populate之前
+				 *	就能够被其他bean所感知到（就是放到三级缓存中）。第一次访问被放到三级缓存中，出现了循环依赖
+				 *	之后的第二次访问，就可以在缓存中取得这个未被populate的bean，这样就解决了循环依赖的问题。
 				 */
 				beforeSingletonCreation(beanName);
 				boolean newSingleton = false;
